@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
     
-    <title>码年纪事</title>
+    <title>修正monkey补丁在windows下失败的问题 | 码年纪事</title>
 
     <meta name="description" content="码年纪事">
     <meta name="keywords" content="">
@@ -36,7 +36,7 @@
 
 
     <script>
-        window.isPost = false
+        window.isPost = true
         window.aomori = {
             
             
@@ -99,26 +99,46 @@
         <div class="main">
             <section class="inner">
                 <section class="inner-main">
-                    <div class="index">
-  
-    
-      <article
-id="post-fix-concurrent-monkey-windows"
-class="article article-type-post"
->
+                    <div class="post">
+    <article id="post-ckzy8ur2e00003stugbrs7oz0" class="article article-type-post" itemscope
+    itemprop="blogPost">
 
+    <div class="article-inner">
 
-
-<div class="article-inner">
-    
-
-    <div class="article-body">
-    <header class="article-title">
-        <a href="/2022/02/22/fix-concurrent-monkey-windows/">修正monkey补丁在windows下失败的问题</a>
-    </header>
-    <div class="article-entry post-inner-html">
         
-        <h1 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h1><p>公司内正在做的一个项目最近正在写接口集成测试的脚本，但是由于项目内部分功能引用了全局单例获取的函数，虽然通过gomonkey可以进行patch，但是由于gomonkey补丁当前非协程安全的，也就是没办法做并行的测试，而我们的项目用例很多，如果串行测试，整个CI流程走下来要接近10分钟，这非常影响开发的效率，所以开始寻求解决方案。</p>
+          
+        
+        
+        
+
+        
+        <header class="article-header">
+            
+  
+    <h1 class="article-title" itemprop="name">
+      修正monkey补丁在windows下失败的问题
+    </h1>
+  
+
+        </header>
+        
+
+        <div class="article-more-info article-more-info-post hairline">
+
+            <div class="article-date">
+  <time datetime="2022-02-22T13:53:49.000Z" itemprop="datePublished">2022-02-22</time>
+</div>
+
+            
+
+            
+
+            
+
+        </div>
+
+        <div class="article-entry post-inner-html hairline" itemprop="articleBody">
+            <h1 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h1><p>公司内正在做的一个项目最近正在写接口集成测试的脚本，但是由于项目内部分功能引用了全局单例获取的函数，虽然通过gomonkey可以进行patch，但是由于gomonkey补丁当前非协程安全的，也就是没办法做并行的测试，而我们的项目用例很多，如果串行测试，整个CI流程走下来要接近10分钟，这非常影响开发的效率，所以开始寻求解决方案。</p>
 <h1 id="转机"><a href="#转机" class="headerlink" title="转机"></a>转机</h1><p>最终在网上发现了有人做了一个支持多协程的monkey补丁<a target="_blank" rel="noopener" href="https://github.com/go-kiss/monkey">go-kiss&#x2F;monkey</a>，看了作者的<a target="_blank" rel="noopener" href="https://taoshu.in/go/monkey.html">实现文章</a>后，其基本原理就是通过写入一段switch代码段，通过汇编获取和程序中一致的协程ID，通过比较进行分支跳转，虽然当前的版本比较粗糙，安全性也不够完善，但是作为测试我觉得是够用了，所以打算在项目里先试试</p>
 <h1 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h1><p>测试这个monkey库的时候发现了一个问题，在AMD64 + Linux 的环境下是能够正常跑通独立patch的逻辑，但是Windows下却失效了，然而我司不少小伙伴的开发机还是使用Windows，如果Windows下无法正常使用，就算用wsl等方式进行调试，也会影响到原先的开发流程，既然作者把基本原理都提供了，故打算尝试解决这个Bug。</p>
 <h1 id="排查"><a href="#排查" class="headerlink" title="排查"></a>排查</h1><h2 id="排查Hook流程"><a href="#排查Hook流程" class="headerlink" title="排查Hook流程"></a>排查Hook流程</h2><p>写了一段测试代码用于排查，执行后停在input处，拿x86debug附加进去，找到协程判断的汇编段</p>
@@ -240,141 +260,66 @@ g2 add = 100
 <p>测试符合预期，收工。</p>
 <h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>目前monkey patch这块还是比较hack的行为，由于和底层汇编实现强关联，需要单独去适配不同的平台、不同的架构还是挺蛋疼的，不知道是否有更好的方式来实现，比如使用go的中间层汇编在执行的时候转换成字节码再patch进去，不过目前好像没有找到实现方式，待定吧~</p>
 
-        
-    </div>
-    </div>
+        </div>
 
-    <div class="article-badge">
-        
-        
     </div>
 
-</div>
-
-<footer class="article-footer">
-    <div class="article-more-info">
-    <div class="article-date">
-  <time datetime="2022-02-22T13:53:49.000Z" itemprop="datePublished">2022-02-22</time>
-</div>
     
+
     
-    </div>
-</footer>
+
+    
+
+    
+
+    
+
+    
+<nav class="article-nav">
+  
+  
+    <a href="/2022/02/13/program-optimization-essay/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-caption">上一篇</div>
+      <div class="article-nav-title">程序优化随笔</div>
+    </a>
+  
+</nav>
+
+
+    <section class="share">
+        <div class="share-title">分享</div>
+        <a class="share-item" target="_blank"
+            href="https://twitter.com/share?text=修正monkey补丁在windows下失败的问题 - 码年纪事&url=http://lzq.im/2022/02/22/fix-concurrent-monkey-windows/">
+            <box-icon type='logo' name='twitter'></box-icon>
+        </a>
+        <a class="share-item" target="_blank"
+            href="https://www.facebook.com/sharer.php?title=修正monkey补丁在windows下失败的问题 - 码年纪事&u=http://lzq.im/2022/02/22/fix-concurrent-monkey-windows/">
+            <box-icon name='facebook-square' type='logo' ></box-icon>
+        </a>
+        <!-- <a class="share-item" target="_blank"
+            href="https://service.weibo.com/share/share.php?title=修正monkey补丁在windows下失败的问题 - 码年纪事&url=http://lzq.im/2022/02/22/fix-concurrent-monkey-windows/&pic=">
+            <div class="n-icon n-icon-weibo"></div>
+        </a> -->
+    </section>
 
 </article>
 
-    
-  
-    
-      <article
-id="post-program-optimization-essay"
-class="article article-type-post"
->
 
 
 
-<div class="article-inner">
-    
 
-    <div class="article-body">
-    <header class="article-title">
-        <a href="/2022/02/13/program-optimization-essay/">程序优化随笔</a>
-    </header>
-    <div class="article-entry post-inner-html">
-        
-        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>本文目前还只是个草稿雏形，待后续补充</p>
-<h2 id="局部性原理"><a href="#局部性原理" class="headerlink" title="局部性原理"></a>局部性原理</h2><p>现代程序优化很大一部分都基于局部性原理来进行，这主要是由于存储器和CPU本身效率的巨大差距，进而出现的多级缓存机制，不少程序优化就是利用了这一点，尽可能保证高层次的快速缓存能够命中，以此来提升程序的执行效率。</p>
-<h2 id="关于编译器优化"><a href="#关于编译器优化" class="headerlink" title="关于编译器优化"></a>关于编译器优化</h2><p>虽然现代编译器优化已经可以帮助完成很多常规情况下的优化，但是因为程序执行上的不确定性，有些代码会导致妨碍编译器进行优化，如数组的越界检查、存储器别名使用等情形。</p>
-<ul>
-<li>案例 存储器别名使用</li>
-</ul>
-<pre><code class="go">func addDouble(a, b *int) &#123;
-    *a += *b
-    *a += *b
-&#125;
 
-func addDouble2(a, b *int) &#123;
-    *a += 2 * *b
-&#125;
-</code></pre>
-<p>这2个函数表面看起来是一样的，但是你考虑一下a和b指针相等情况，就会发现实际上他们并不一致</p>
-<h1 id="优化点"><a href="#优化点" class="headerlink" title="优化点"></a>优化点</h1><h2 id="缓存行"><a href="#缓存行" class="headerlink" title="缓存行"></a>缓存行</h2><h3 id="缓存抖动"><a href="#缓存抖动" class="headerlink" title="缓存抖动"></a>缓存抖动</h3><h2 id="利用指令集"><a href="#利用指令集" class="headerlink" title="利用指令集"></a>利用指令集</h2><p>如SSE指令，可以提高寄存器利用，通过并行的方式提高效率</p>
 
-        
-    </div>
-    </div>
 
-    <div class="article-badge">
-        
-        
-    </div>
+
+
+
+
+
+
+
 
 </div>
-
-<footer class="article-footer">
-    <div class="article-more-info">
-    <div class="article-date">
-  <time datetime="2022-02-13T07:08:23.000Z" itemprop="datePublished">2022-02-13</time>
-</div>
-    
-    
-    </div>
-</footer>
-
-</article>
-
-    
-  
-    
-      <article
-id="post-hello-blog"
-class="article article-type-post"
->
-
-
-
-<div class="article-inner">
-    
-
-    <div class="article-body">
-    <header class="article-title">
-        <a href="/2022/02/12/hello-blog/">hello blog</a>
-    </header>
-    <div class="article-entry post-inner-html">
-        
-        <ul>
-<li>测试</li>
-</ul>
-
-        
-    </div>
-    </div>
-
-    <div class="article-badge">
-        
-        
-    </div>
-
-</div>
-
-<footer class="article-footer">
-    <div class="article-more-info">
-    <div class="article-date">
-  <time datetime="2022-02-12T07:06:48.000Z" itemprop="datePublished">2022-02-12</time>
-</div>
-    
-    
-    </div>
-</footer>
-
-</article>
-
-    
-  
-
-  
-</div>
-
                 </section>
             </section>
 
@@ -396,6 +341,12 @@ class="article article-type-post"
 <div class="widget" id="widget">
     
       
+  <div class="widget-wrap">
+    <div class="widget-inner">
+      <div class="toc post-toc-html"></div>
+    </div>
+  </div>
+
     
       
 
