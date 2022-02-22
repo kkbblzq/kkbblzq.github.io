@@ -118,9 +118,9 @@ class="article article-type-post"
     </header>
     <div class="article-entry post-inner-html">
         
-        <h1 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h1><p>公司内正在做的一个项目最近正在写接口集成测试的脚本，但是由于项目内部分功能引用了全局单例获取的函数，虽然通过gomonkey可以进行patch，但是由于gomonkey补丁当前非协程安全的，也就是没办法做并行的测试，而我们的项目用例很多，如果串行测试，整个CI流程走下来要接近10分钟，这非常影响开发的效率，所以开始寻求解决方案。</p>
-<h1 id="转机"><a href="#转机" class="headerlink" title="转机"></a>转机</h1><p>最终在网上发现了有人做了一个支持多协程的monkey补丁<a target="_blank" rel="noopener" href="https://github.com/go-kiss/monkey">go-kiss&#x2F;monkey</a>，看了作者的<a target="_blank" rel="noopener" href="https://taoshu.in/go/monkey.html">实现文章</a>后，其基本原理就是通过写入一段switch代码段，通过汇编获取和程序中一致的协程ID，通过比较进行分支跳转，虽然当前的版本比较粗糙，安全性也不够完善，但是作为测试我觉得是够用了，所以打算在项目里先试试</p>
-<h1 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h1><p>测试这个monkey库的时候发现了一个问题，在AMD64 + Linux 的环境下是能够正常跑通独立patch的逻辑，但是Windows下却失效了，然而我司不少小伙伴的开发机还是使用Windows，如果Windows下无法正常使用，就算用wsl等方式进行调试，也会影响到原先的开发流程，既然作者把基本原理都提供了，故打算尝试解决这个Bug。</p>
+        <h1 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h1><p>公司内正在做的一个项目最近正在写接口集成测试的脚本，但是由于项目内部分代码使用了全局单例，这部分很难进行mock测试，虽然通过gomonkey可以进行一定程度的patch，但是由于gomonkey当前是非协程安全的，也就是没办法做并行的测试，然而我们的项目用例很多，如果进行串行测试，整个CI流程走下来要接近10分钟，这会非常影响开发的效率，故我开始寻求解决方案。</p>
+<h1 id="转机"><a href="#转机" class="headerlink" title="转机"></a>转机</h1><p>最终在网上发现了有人做了一个支持多协程的monkey补丁<a target="_blank" rel="noopener" href="https://github.com/go-kiss/monkey">go-kiss&#x2F;monkey</a>，看了作者的<a target="_blank" rel="noopener" href="https://taoshu.in/go/monkey.html">实现文章</a>后，其基本原理就是通过写入一段汇编实现的switch代码段，通过当前协程ID的比较，进行分支跳转到不同的patch上，虽然当前的版本比较粗糙，安全性据说也没有完善处理，但是作为测试我觉得是够用了，所以打算在项目里先试试。</p>
+<h1 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h1><p>测试这个monkey库的时候发现了一个问题，在AMD64 + Linux 的环境下是能够正常跑通独立patch的逻辑，但是AMD64 + Windows下却失效了，然而我司不少小伙伴的开发机还是使用Windows平台，如果在Windows下无法正常使用，就需要用wsl等方式来跑自测，这样会影响到原先的开发流程。既然作者把基本原理都提供了，故我打算尝试解决这个Bug。</p>
 <h1 id="排查"><a href="#排查" class="headerlink" title="排查"></a>排查</h1><h2 id="排查Hook流程"><a href="#排查Hook流程" class="headerlink" title="排查Hook流程"></a>排查Hook流程</h2><p>写了一段测试代码用于排查，执行后停在input处，拿x86debug附加进去，找到协程判断的汇编段</p>
 <pre><code>import (
     &quot;fmt&quot;
@@ -144,7 +144,7 @@ func main() &#123;
     fmt.Printf(&quot;g1 add = %d\n&quot;, Add(99, 99))
 &#125;
 </code></pre>
-<p>发现其判断协程ID的逻辑判断错误，cmp应该成功，应该不走jne跳转，实际上却判断失败，跳过了patch，手工将跳转nop掉之后，能够正常的执行patch代码，所以初步定位还是协程ID获取的地方有错误。<br><img src="/2022/02/22/fix-concurrent-monkey-windows/x64debug.png" loading="lazy"></p>
+<p>发现其判断协程ID的逻辑没有通过，然而测试代码只有一个协程，明显和我们的预期相悖，按理想逻辑，cmp应该成功，不走jne跳转，实际上却判断失败，跳过了patch，手工将跳转nop掉之后，能够正常的执行patch代码，所以初步定位是协程ID获取的地方有错误，导致程序中获取的协程ID和汇编代码中获取的协程ID不一致。<br><img src="/2022/02/22/fix-concurrent-monkey-windows/x64debug.png" loading="lazy"></p>
 <pre><code class="go">// 错误的代码
 func getg() []byte &#123;
     return []byte&#123;
@@ -186,7 +186,7 @@ go tool objdump main.exe &gt; main.txt
 <pre><code class="asm">  getg_amd64.s:10    0x45ab89        488b8100000000        MOVQ 0(CX), AX        
 </code></pre>
 <p>也就是说在Windows下其实是2级指针，从<code>GS:0x28</code>获取出来的是一个二级指针，还需要一次move才能获取到g的指针</p>
-<h1 id="修复和测试"><a href="#修复和测试" class="headerlink" title="修复和测试"></a>修复和测试</h1><h2 id="修复"><a href="#修复" class="headerlink" title="修复"></a>修复</h2><p>知道问题了，于是尝试修改一波，不过我对汇编不是很熟，大致想法是先将二级指针移到r13，在二次取值回。</p>
+<h1 id="修复和测试"><a href="#修复和测试" class="headerlink" title="修复和测试"></a>修复和测试</h1><h2 id="修复"><a href="#修复" class="headerlink" title="修复"></a>修复</h2><p>知道问题了，于是尝试修改一波，不过我对汇编不是很熟，大致想法是先将二级指针移到r13，在二次取值回r12，这样只需要修改getg的逻辑，其他的代码可以保持原有的逻辑，写入的协程ID在后面的代码中会覆盖掉r12，照我的理解应该是没有问题。</p>
 <pre><code class="go">func getg() []byte &#123;
     return []byte&#123;
         // mov r13,QWORD PTR gs:0x28
