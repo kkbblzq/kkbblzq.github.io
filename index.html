@@ -103,6 +103,108 @@
   
     
       <article
+id="post-manjaro-for-zephyrus-g14"
+class="article article-type-post"
+>
+
+
+
+<div class="article-inner">
+    
+
+    <div class="article-body">
+    <header class="article-title">
+        <a href="/2022/03/03/manjaro-for-zephyrus-g14/">ROG Zephyrus G14 Manjaro-KDE 初步安装体验</a>
+    </header>
+    <div class="article-entry post-inner-html">
+        
+        <h1 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h1><p>之前我主力的开发环境还是在Windows下，需要Linux的部分一般使用WSL来完成，最近闲来无事，打算给笔记本装个Linux玩玩。关于发行版的选择，几经考虑还是选择了相对来说比较火的Manjaro，一来既然是折腾，还是打算选择一个滚动发现版的系统，最后取舍之下就选了Manjaro，至于为什么是KDE，大概是因为之前也用过GNOME，打算换个口味。😊</p>
+<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><p>由于有图形化的界面，这块是比较简单的了，下载完镜像后使用<code>rufus</code>做一个启动盘，BIOS上选好优先级，很容易就进入启动菜单了。<br>一开始默认有2个安装选择，闭源驱动的版本和开源驱动的版本，由于我这个笔记本是绿厂显卡的，因为<code>fxxk Nvidia</code>的原因，选了闭源驱动的版本，这样稳定性上相对来说会更好。</p>
+<p>剩下的就是根据GUI的提示选择好分区，安装完事。</p>
+<h1 id="折腾"><a href="#折腾" class="headerlink" title="折腾"></a>折腾</h1><h2 id="换源"><a href="#换源" class="headerlink" title="换源"></a>换源</h2><p>先把官方源替换成国内镜像</p>
+<pre><code>sudo pacman-mirrors -i -c China -m rank
+</code></pre>
+<p>然后在<code>/etc/pacman.conf</code>添加一下中文软件包</p>
+<pre><code>[archlinuxcn]
+SigLevel = TrustAll
+Server = https://mirrors.tuna.tsinghua.edu.cn/archlinuxcn/$arch
+
+[arch4edu]
+SigLevel = TrustAll
+Server = https://mirrors.tuna.tsinghua.edu.cn/arch4edu/$arch
+</code></pre>
+<p>更新系统</p>
+<pre><code>sudo pacman -Syyu
+</code></pre>
+<h2 id="安装yay"><a href="#安装yay" class="headerlink" title="安装yay"></a>安装yay</h2><pre><code>sudo pacman -S yay
+</code></pre>
+<p>yay是一个go写的aur助手，相比来说比官方有更多的软件包，可以安装一些官方源找不到的软件包</p>
+<h2 id="常用软件安装"><a href="#常用软件安装" class="headerlink" title="常用软件安装"></a>常用软件安装</h2><h3 id="输入法"><a href="#输入法" class="headerlink" title="输入法"></a>输入法</h3><p>这里安装的是rime，一般还会调整输入方案、主题等，这些详细的配置网上已经有比较多的说明了，就不具体列了</p>
+<pre><code>yay -S fcitx5-im fcitx5-configtool fcitx5-rime
+</code></pre>
+<p>修改.xprofile</p>
+<pre><code>export GTK_IM_MODULE=fcitx
+export QT_IM_MODULE=fcitx
+export SDL_IM_MODULE=fcitx
+export XMODIFIERS=&quot;@im=fcitx&quot;
+export LANG=&quot;zh_CN.UTF-8&quot;
+export LC_CTYPE=&quot;zh_CN.UTF-8&quot;
+</code></pre>
+<h3 id="Chrome"><a href="#Chrome" class="headerlink" title="Chrome"></a>Chrome</h3><p>自带的Firefox不习惯，还是习惯Chrome</p>
+<pre><code>yay -S google-chrome
+</code></pre>
+<h3 id="腾讯软件"><a href="#腾讯软件" class="headerlink" title="腾讯软件"></a>腾讯软件</h3><p>具体可看这2个repo<br>如果笔记本调了系统缩放比例，由于wine软件是不会跟随这个配置的，需要单独去配置dpi</p>
+<pre><code>https://github.com/vufa/deepin-wine-tim-arch
+https://github.com/vufa/deepin-wine-wechat-arch
+</code></pre>
+<h3 id="科学上网"><a href="#科学上网" class="headerlink" title="科学上网"></a>科学上网</h3><p>这里推荐Qv2ray，虽然已经不再维护了，但是目前是够用的</p>
+<pre><code>https://github.com/Qv2ray/Qv2ray
+</code></pre>
+<p>可以直接用yay下载，如果从github下安装包的话，可能需要安装依赖<code> libxcrypt-compat</code></p>
+<h2 id="终端配置"><a href="#终端配置" class="headerlink" title="终端配置"></a>终端配置</h2><p>Manjaro默认就启用了zsh，这边使用oh-my-zsh来增强，至于插件主题啥的就按个人喜欢修改了</p>
+<pre><code>sh -c &quot;$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)&quot;
+cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc
+</code></pre>
+<p>命令行的工具<br>这边在网上看到一个合集，挺不错的 <a target="_blank" rel="noopener" href="https://www.kawabangga.com/posts/3084">合集</a></p>
+<h2 id="开发工具"><a href="#开发工具" class="headerlink" title="开发工具"></a>开发工具</h2><p>这里装了vscode postman</p>
+<pre><code>yay -S visual-studio-code-bin postman
+</code></pre>
+<p>然后安装了JetBrains家的IDE</p>
+<h2 id="华硕笔记本相关"><a href="#华硕笔记本相关" class="headerlink" title="华硕笔记本相关"></a>华硕笔记本相关</h2><p>gitlab上有一个玩家自发开发的华硕笔记本的linux工具<a target="_blank" rel="noopener" href="https://gitlab.com/asus-linux">仓库</a><br><code>asusctl</code>可以用于电池充电控制、LED控制等等<br><code>supergfxctl</code>用于显卡切换 </p>
+<h2 id="字体-x2F-美化"><a href="#字体-x2F-美化" class="headerlink" title="字体&#x2F;美化"></a>字体&#x2F;美化</h2><p>这部分都是看个人喜好了，不过KDE的字体渲染还是挺糟糕的，这边换了<code>文泉驿</code>的字体</p>
+<pre><code>yay -S wqy-zenhei wqy-bitmapfont
+</code></pre>
+<h1 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h1><p>其实可以折腾的东西有很多，本文也会持续更新使用情况</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/114296129">Manjaro-KDE安装配置全攻略</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/2d096cd9ad61">manjaro 切换国内源及软件安装</a></p>
+
+        
+    </div>
+    </div>
+
+    <div class="article-badge">
+        
+        
+    </div>
+
+</div>
+
+<footer class="article-footer">
+    <div class="article-more-info">
+    <div class="article-date">
+  <time datetime="2022-03-03T10:17:08.000Z" itemprop="datePublished">2022-03-03</time>
+</div>
+    
+    
+    </div>
+</footer>
+
+</article>
+
+    
+  
+    
+      <article
 id="post-fix-concurrent-monkey-windows"
 class="article article-type-post"
 >
@@ -282,10 +384,22 @@ class="article article-type-post"
     </header>
     <div class="article-entry post-inner-html">
         
-        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>本文目前还只是个草稿雏形，待后续补充</p>
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p><strong>过早优化是万恶之源</strong><br>文本只是提供一些优化可能性<br>本文目前还只是个草稿雏形，待后续补充</p>
 <h2 id="局部性原理"><a href="#局部性原理" class="headerlink" title="局部性原理"></a>局部性原理</h2><p>现代程序优化很大一部分都基于局部性原理来进行，这主要是由于存储器和CPU本身效率的巨大差距，进而出现的多级缓存机制，不少程序优化就是利用了这一点，尽可能保证高层次的快速缓存能够命中，以此来提升程序的执行效率。</p>
 <h2 id="关于编译器优化"><a href="#关于编译器优化" class="headerlink" title="关于编译器优化"></a>关于编译器优化</h2><p>虽然现代编译器优化已经可以帮助完成很多常规情况下的优化，但是因为程序执行上的不确定性，有些代码会导致妨碍编译器进行优化，如数组的越界检查、存储器别名使用等情形。</p>
 <ul>
+<li>案例 边界检查<pre><code class="go">// 检查1次
+func bounds1(s []int, index int) &#123;
+  _ = s[index:]
+  _ = s[:index]
+&#125;
+// 检查2次
+func bounds2(s []int, index int) &#123;
+  _ = s[:index]
+  _ = s[index:]
+&#125;
+</code></pre>
+</li>
 <li>案例 存储器别名使用</li>
 </ul>
 <pre><code class="go">func addDouble(a, b *int) &#123;
@@ -408,6 +522,10 @@ class="article article-type-post"
     <div class="widget-title"><span>Recent Posts</span></div>
     <div class="widget-inner">
       <ul>
+        
+          <li>
+            <a href="/2022/03/03/manjaro-for-zephyrus-g14/">ROG Zephyrus G14 Manjaro-KDE 初步安装体验</a>
+          </li>
         
           <li>
             <a href="/2022/02/22/fix-concurrent-monkey-windows/">修正monkey补丁在windows下失败的问题</a>

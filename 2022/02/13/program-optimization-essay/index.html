@@ -100,7 +100,7 @@
             <section class="inner">
                 <section class="inner-main">
                     <div class="post">
-    <article id="post-ckzy99no10002nwtudgxc7cjp" class="article article-type-post" itemscope
+    <article id="post-cl0b0z3c10003ootu1yu81m5k" class="article article-type-post" itemscope
     itemprop="blogPost">
 
     <div class="article-inner">
@@ -138,10 +138,22 @@
         </div>
 
         <div class="article-entry post-inner-html hairline" itemprop="articleBody">
-            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>本文目前还只是个草稿雏形，待后续补充</p>
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p><strong>过早优化是万恶之源</strong><br>文本只是提供一些优化可能性<br>本文目前还只是个草稿雏形，待后续补充</p>
 <h2 id="局部性原理"><a href="#局部性原理" class="headerlink" title="局部性原理"></a>局部性原理</h2><p>现代程序优化很大一部分都基于局部性原理来进行，这主要是由于存储器和CPU本身效率的巨大差距，进而出现的多级缓存机制，不少程序优化就是利用了这一点，尽可能保证高层次的快速缓存能够命中，以此来提升程序的执行效率。</p>
 <h2 id="关于编译器优化"><a href="#关于编译器优化" class="headerlink" title="关于编译器优化"></a>关于编译器优化</h2><p>虽然现代编译器优化已经可以帮助完成很多常规情况下的优化，但是因为程序执行上的不确定性，有些代码会导致妨碍编译器进行优化，如数组的越界检查、存储器别名使用等情形。</p>
 <ul>
+<li>案例 边界检查<pre><code class="go">// 检查1次
+func bounds1(s []int, index int) &#123;
+  _ = s[index:]
+  _ = s[:index]
+&#125;
+// 检查2次
+func bounds2(s []int, index int) &#123;
+  _ = s[:index]
+  _ = s[index:]
+&#125;
+</code></pre>
+</li>
 <li>案例 存储器别名使用</li>
 </ul>
 <pre><code class="go">func addDouble(a, b *int) &#123;
@@ -264,6 +276,10 @@ func addDouble2(a, b *int) &#123;
     <div class="widget-title"><span>Recent Posts</span></div>
     <div class="widget-inner">
       <ul>
+        
+          <li>
+            <a href="/2022/03/03/manjaro-for-zephyrus-g14/">ROG Zephyrus G14 Manjaro-KDE 初步安装体验</a>
+          </li>
         
           <li>
             <a href="/2022/02/22/fix-concurrent-monkey-windows/">修正monkey补丁在windows下失败的问题</a>
