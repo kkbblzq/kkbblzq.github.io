@@ -8,7 +8,7 @@
     
     <title>修正monkey补丁在windows下失败的问题 | 码年纪事</title>
 
-    <meta name="description" content="码年纪事">
+    <meta name="description" content="&lt;h1 id=&#34;起因&#34;&gt;&lt;a href=&#34;#起因&#34; class=&#34;headerlink&#34; title=&#34;起因&#34;&gt;&lt;/a&gt;起因&lt;/h1&gt;&lt;p&gt;公司内正在做的一个项目最近正在写接口集成测试的脚本，但是由于项目内部分代码使用了全局单例，这部分很难进行mock测试，虽然通过gomonkey可以进行一定程度的patch，但是由于gomonkey当前是非协程安全的，也就是没办法做并行的测试，然而我们的项目用例很多，如果进行串行测试，整个CI流程走下来要接近10分钟，这会非常影响开发的效率，故我开始寻求解决方案。&lt;/p&gt;">
     <meta name="keywords" content="">
 
     
@@ -16,17 +16,17 @@
     <meta property="og:locale" content="cn" />
     <meta property="og:type" content="article" />
     <meta property="og:title" content= "修正monkey补丁在windows下失败的问题 | 码年纪事"  />
-    <meta property="og:description" content= "码年纪事" />
+    <meta property="og:description" content= "&lt;h1 id=&#34;起因&#34;&gt;&lt;a href=&#34;#起因&#34; class=&#34;headerlink&#34; title=&#34;起因&#34;&gt;&lt;/a&gt;起因&lt;/h1&gt;&lt;p&gt;公司内正在做的一个项目最近正在写接口集成测试的脚本，但是由于项目内部分代码使用了全局单例，这部分很难进行mock测试，虽然通过gomonkey可以进行一定程度的patch，但是由于gomonkey当前是非协程安全的，也就是没办法做并行的测试，然而我们的项目用例很多，如果进行串行测试，整个CI流程走下来要接近10分钟，这会非常影响开发的效率，故我开始寻求解决方案。&lt;/p&gt;" />
     <meta property="og:url" content="http://lzq.im/2022/02/22/fix-concurrent-monkey-windows/index.html" />
     <meta property="og:site_name" content="" />
     <meta property="article:author" content="lzq" />
     <meta property="article:publisher" content="" />
-    <meta property="og:description" content="码年纪事" />
+    <meta property="og:description" content="&lt;h1 id=&#34;起因&#34;&gt;&lt;a href=&#34;#起因&#34; class=&#34;headerlink&#34; title=&#34;起因&#34;&gt;&lt;/a&gt;起因&lt;/h1&gt;&lt;p&gt;公司内正在做的一个项目最近正在写接口集成测试的脚本，但是由于项目内部分代码使用了全局单例，这部分很难进行mock测试，虽然通过gomonkey可以进行一定程度的patch，但是由于gomonkey当前是非协程安全的，也就是没办法做并行的测试，然而我们的项目用例很多，如果进行串行测试，整个CI流程走下来要接近10分钟，这会非常影响开发的效率，故我开始寻求解决方案。&lt;/p&gt;" />
     <meta name="twitter:title" content="修正monkey补丁在windows下失败的问题 | 码年纪事"/>
-    <meta name="twitter:description" content="码年纪事"/>
+    <meta name="twitter:description" content="&lt;h1 id=&#34;起因&#34;&gt;&lt;a href=&#34;#起因&#34; class=&#34;headerlink&#34; title=&#34;起因&#34;&gt;&lt;/a&gt;起因&lt;/h1&gt;&lt;p&gt;公司内正在做的一个项目最近正在写接口集成测试的脚本，但是由于项目内部分代码使用了全局单例，这部分很难进行mock测试，虽然通过gomonkey可以进行一定程度的patch，但是由于gomonkey当前是非协程安全的，也就是没办法做并行的测试，然而我们的项目用例很多，如果进行串行测试，整个CI流程走下来要接近10分钟，这会非常影响开发的效率，故我开始寻求解决方案。&lt;/p&gt;"/>
     <script type="application/ld+json">
         {
-            "description": "码年纪事",
+            "description": "&lt;h1 id=&#34;起因&#34;&gt;&lt;a href=&#34;#起因&#34; class=&#34;headerlink&#34; title=&#34;起因&#34;&gt;&lt;/a&gt;起因&lt;/h1&gt;&lt;p&gt;公司内正在做的一个项目最近正在写接口集成测试的脚本，但是由于项目内部分代码使用了全局单例，这部分很难进行mock测试，虽然通过gomonkey可以进行一定程度的patch，但是由于gomonkey当前是非协程安全的，也就是没办法做并行的测试，然而我们的项目用例很多，如果进行串行测试，整个CI流程走下来要接近10分钟，这会非常影响开发的效率，故我开始寻求解决方案。&lt;/p&gt;",
             "author": { "@type": "Person", "name": "lzq" },
             "@type": "BlogPosting",
             "url": "http://lzq.im/2022/02/22/fix-concurrent-monkey-windows/index.html",
@@ -140,7 +140,7 @@
             <section class="inner">
                 <section class="inner-main">
                     <div class="post">
-    <article id="post-cl1n7otuj0000v4tubadj9z1o" class="article article-type-post" itemscope
+    <article id="post-cl1n7ursb0000w4tucmevb5b5" class="article article-type-post" itemscope
     itemprop="blogPost">
 
     <div class="article-inner">
@@ -179,6 +179,7 @@
 
         <div class="article-entry post-inner-html hairline" itemprop="articleBody">
             <h1 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h1><p>公司内正在做的一个项目最近正在写接口集成测试的脚本，但是由于项目内部分代码使用了全局单例，这部分很难进行mock测试，虽然通过gomonkey可以进行一定程度的patch，但是由于gomonkey当前是非协程安全的，也就是没办法做并行的测试，然而我们的项目用例很多，如果进行串行测试，整个CI流程走下来要接近10分钟，这会非常影响开发的效率，故我开始寻求解决方案。</p>
+<span id="more"></span>
 <h1 id="转机"><a href="#转机" class="headerlink" title="转机"></a>转机</h1><p>最终在网上发现了有人做了一个支持多协程的monkey补丁<a target="_blank" rel="noopener" href="https://github.com/go-kiss/monkey">go-kiss&#x2F;monkey</a>，看了作者的<a target="_blank" rel="noopener" href="https://taoshu.in/go/monkey.html">实现文章</a>后，其基本原理就是通过写入一段汇编实现的switch代码段，通过当前协程ID的比较，进行分支跳转到不同的patch上，虽然当前的版本比较粗糙，安全性据说也没有完善处理，但是作为测试我觉得是够用了，所以打算在项目里先试试。</p>
 <h1 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h1><p>测试这个monkey库的时候发现了一个问题，在AMD64 + Linux 的环境下是能够正常跑通独立patch的逻辑，但是AMD64 + Windows下却失效了，然而我司不少小伙伴的开发机还是使用Windows平台，如果在Windows下无法正常使用，就需要用wsl等方式来跑自测，这样会影响到原先的开发流程。既然作者把基本原理都提供了，故我打算尝试解决这个Bug。</p>
 <h1 id="排查"><a href="#排查" class="headerlink" title="排查"></a>排查</h1><h2 id="排查Hook流程"><a href="#排查Hook流程" class="headerlink" title="排查Hook流程"></a>排查Hook流程</h2><p>写了一段测试代码用于排查，执行后停在input处，拿x86debug附加进去，找到协程判断的汇编段</p>
@@ -427,7 +428,7 @@ g2 add = 100
       <ul>
         
           <li>
-            <a href="/2022/03/31/redis-code-active-expiry/">从源码看Redis —— 关于主动过期那点事</a>
+            <a href="/2022/04/06/redis-code-active-expiry/">从源码看Redis —— 关于主动过期那点事</a>
           </li>
         
           <li>
@@ -443,7 +444,7 @@ g2 add = 100
           </li>
         
           <li>
-            <a href="/2022/02/12/hello-blog/">hello blog</a>
+            <a href="/2022/02/12/hello-blog/">是时候也整个博客玩</a>
           </li>
         
       </ul>

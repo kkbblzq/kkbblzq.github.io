@@ -8,7 +8,11 @@
     
     <title>从源码看Redis —— 关于主动过期那点事 | 码年纪事</title>
 
-    <meta name="description" content="码年纪事">
+    <meta name="description" content="&lt;h1 id=&#34;前言&#34;&gt;&lt;a href=&#34;#前言&#34; class=&#34;headerlink&#34; title=&#34;前言&#34;&gt;&lt;/a&gt;前言&lt;/h1&gt;&lt;p&gt;前段时间刷脉脉的时候，刷到了这样一个面试题：&lt;code&gt;为什么大量Key过期的时候，会影响整个redis服务的延迟&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;如果你是面试者，你会怎么回答？&lt;/p&gt;
+&lt;p&gt;如果你只知道redis是一个单线程reactor模型，你可能会回答：&lt;code&gt;因为redis是单线程模型，所以是因为处理删除key的事件耗时过长而导致其他事件排队引起延迟增加&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;这个回答能让面试官满意吗？可能还不够，他也许会继续问你：&lt;code&gt;那redis主动处理过期key的时机是什么时候？处理的逻辑是什么？最坏情况下会增加多少延迟？如何判断是因为过期key而导致的延迟抖动？如何解决这个问题？&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;同样的，当时看到脉脉帖子上的回答，我也觉得不够完整，所以索性带着这些问题翻了下redis的源码。&lt;/p&gt;">
     <meta name="keywords" content="">
 
     
@@ -16,20 +20,36 @@
     <meta property="og:locale" content="cn" />
     <meta property="og:type" content="article" />
     <meta property="og:title" content= "从源码看Redis —— 关于主动过期那点事 | 码年纪事"  />
-    <meta property="og:description" content= "码年纪事" />
-    <meta property="og:url" content="http://lzq.im/2022/03/31/redis-code-active-expiry/index.html" />
+    <meta property="og:description" content= "&lt;h1 id=&#34;前言&#34;&gt;&lt;a href=&#34;#前言&#34; class=&#34;headerlink&#34; title=&#34;前言&#34;&gt;&lt;/a&gt;前言&lt;/h1&gt;&lt;p&gt;前段时间刷脉脉的时候，刷到了这样一个面试题：&lt;code&gt;为什么大量Key过期的时候，会影响整个redis服务的延迟&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;如果你是面试者，你会怎么回答？&lt;/p&gt;
+&lt;p&gt;如果你只知道redis是一个单线程reactor模型，你可能会回答：&lt;code&gt;因为redis是单线程模型，所以是因为处理删除key的事件耗时过长而导致其他事件排队引起延迟增加&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;这个回答能让面试官满意吗？可能还不够，他也许会继续问你：&lt;code&gt;那redis主动处理过期key的时机是什么时候？处理的逻辑是什么？最坏情况下会增加多少延迟？如何判断是因为过期key而导致的延迟抖动？如何解决这个问题？&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;同样的，当时看到脉脉帖子上的回答，我也觉得不够完整，所以索性带着这些问题翻了下redis的源码。&lt;/p&gt;" />
+    <meta property="og:url" content="http://lzq.im/2022/04/06/redis-code-active-expiry/index.html" />
     <meta property="og:site_name" content="" />
     <meta property="article:author" content="lzq" />
     <meta property="article:publisher" content="" />
-    <meta property="og:description" content="码年纪事" />
+    <meta property="og:description" content="&lt;h1 id=&#34;前言&#34;&gt;&lt;a href=&#34;#前言&#34; class=&#34;headerlink&#34; title=&#34;前言&#34;&gt;&lt;/a&gt;前言&lt;/h1&gt;&lt;p&gt;前段时间刷脉脉的时候，刷到了这样一个面试题：&lt;code&gt;为什么大量Key过期的时候，会影响整个redis服务的延迟&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;如果你是面试者，你会怎么回答？&lt;/p&gt;
+&lt;p&gt;如果你只知道redis是一个单线程reactor模型，你可能会回答：&lt;code&gt;因为redis是单线程模型，所以是因为处理删除key的事件耗时过长而导致其他事件排队引起延迟增加&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;这个回答能让面试官满意吗？可能还不够，他也许会继续问你：&lt;code&gt;那redis主动处理过期key的时机是什么时候？处理的逻辑是什么？最坏情况下会增加多少延迟？如何判断是因为过期key而导致的延迟抖动？如何解决这个问题？&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;同样的，当时看到脉脉帖子上的回答，我也觉得不够完整，所以索性带着这些问题翻了下redis的源码。&lt;/p&gt;" />
     <meta name="twitter:title" content="从源码看Redis —— 关于主动过期那点事 | 码年纪事"/>
-    <meta name="twitter:description" content="码年纪事"/>
+    <meta name="twitter:description" content="&lt;h1 id=&#34;前言&#34;&gt;&lt;a href=&#34;#前言&#34; class=&#34;headerlink&#34; title=&#34;前言&#34;&gt;&lt;/a&gt;前言&lt;/h1&gt;&lt;p&gt;前段时间刷脉脉的时候，刷到了这样一个面试题：&lt;code&gt;为什么大量Key过期的时候，会影响整个redis服务的延迟&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;如果你是面试者，你会怎么回答？&lt;/p&gt;
+&lt;p&gt;如果你只知道redis是一个单线程reactor模型，你可能会回答：&lt;code&gt;因为redis是单线程模型，所以是因为处理删除key的事件耗时过长而导致其他事件排队引起延迟增加&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;这个回答能让面试官满意吗？可能还不够，他也许会继续问你：&lt;code&gt;那redis主动处理过期key的时机是什么时候？处理的逻辑是什么？最坏情况下会增加多少延迟？如何判断是因为过期key而导致的延迟抖动？如何解决这个问题？&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;同样的，当时看到脉脉帖子上的回答，我也觉得不够完整，所以索性带着这些问题翻了下redis的源码。&lt;/p&gt;"/>
     <script type="application/ld+json">
         {
-            "description": "码年纪事",
+            "description": "&lt;h1 id=&#34;前言&#34;&gt;&lt;a href=&#34;#前言&#34; class=&#34;headerlink&#34; title=&#34;前言&#34;&gt;&lt;/a&gt;前言&lt;/h1&gt;&lt;p&gt;前段时间刷脉脉的时候，刷到了这样一个面试题：&lt;code&gt;为什么大量Key过期的时候，会影响整个redis服务的延迟&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;如果你是面试者，你会怎么回答？&lt;/p&gt;
+&lt;p&gt;如果你只知道redis是一个单线程reactor模型，你可能会回答：&lt;code&gt;因为redis是单线程模型，所以是因为处理删除key的事件耗时过长而导致其他事件排队引起延迟增加&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;这个回答能让面试官满意吗？可能还不够，他也许会继续问你：&lt;code&gt;那redis主动处理过期key的时机是什么时候？处理的逻辑是什么？最坏情况下会增加多少延迟？如何判断是因为过期key而导致的延迟抖动？如何解决这个问题？&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;同样的，当时看到脉脉帖子上的回答，我也觉得不够完整，所以索性带着这些问题翻了下redis的源码。&lt;/p&gt;",
             "author": { "@type": "Person", "name": "lzq" },
             "@type": "BlogPosting",
-            "url": "http://lzq.im/2022/03/31/redis-code-active-expiry/index.html",
+            "url": "http://lzq.im/2022/04/06/redis-code-active-expiry/index.html",
             "publisher": {
             "@type": "Organization",
             "logo": {
@@ -39,10 +59,10 @@
             "name": "lzq"
             },
             "headline": "从源码看Redis —— 关于主动过期那点事 | 码年纪事",
-            "datePublished": "2022-03-31T06:43:15.000Z",
+            "datePublished": "2022-04-06T06:43:15.000Z",
             "mainEntityOfPage": {
                 "@type": "WebPage",
-                "@id": "http://lzq.im/2022/03/31/redis-code-active-expiry/index.html"
+                "@id": "http://lzq.im/2022/04/06/redis-code-active-expiry/index.html"
             },
             "@context": "http://schema.org"
         }
@@ -140,7 +160,7 @@
             <section class="inner">
                 <section class="inner-main">
                     <div class="post">
-    <article id="post-cl1n7otuq0004v4tuce7d2x2r" class="article article-type-post" itemscope
+    <article id="post-cl1n7ursh0004w4tu1ly03uoh" class="article article-type-post" itemscope
     itemprop="blogPost">
 
     <div class="article-inner">
@@ -166,7 +186,7 @@
         <div class="article-more-info article-more-info-post hairline">
 
             <div class="article-date">
-  <time datetime="2022-03-31T06:43:15.000Z" itemprop="datePublished">2022-03-31</time>
+  <time datetime="2022-04-06T06:43:15.000Z" itemprop="datePublished">2022-04-06</time>
 </div>
 
             
@@ -183,6 +203,8 @@
 <p>如果你只知道redis是一个单线程reactor模型，你可能会回答：<code>因为redis是单线程模型，所以是因为处理删除key的事件耗时过长而导致其他事件排队引起延迟增加</code></p>
 <p>这个回答能让面试官满意吗？可能还不够，他也许会继续问你：<code>那redis主动处理过期key的时机是什么时候？处理的逻辑是什么？最坏情况下会增加多少延迟？如何判断是因为过期key而导致的延迟抖动？如何解决这个问题？</code></p>
 <p>同样的，当时看到脉脉帖子上的回答，我也觉得不够完整，所以索性带着这些问题翻了下redis的源码。</p>
+<span id="more"></span>
+
 <h1 id="源码解析"><a href="#源码解析" class="headerlink" title="源码解析"></a>源码解析</h1><p>这里我们主要看主动过期部分的源码，对于惰性删除、命令调用到过期key引发的删除这些暂时不讨论</p>
 <p>既然是看过期，我们翻到<a target="_blank" rel="noopener" href="https://sourcegraph.com/github.com/redis/redis@871fa12fec41c4d8fc008dbfb8eaf714a9cc1bfc/-/blob/src/expire.c?L113"><code>expire.c的activeExpireCycle函数</code></a>来看下它到底做了什么</p>
 <h2 id="主动过期函数注释"><a href="#主动过期函数注释" class="headerlink" title="主动过期函数注释"></a>主动过期函数注释</h2><p>看源码，函数的注释是非常重要，它能够帮忙传递开发者的想法，帮助我们更快的了解其用意</p>
@@ -756,15 +778,15 @@ int serverCron(struct aeEventLoop *eventLoop, long long id, void *clientData) &#
     <section class="share">
         <div class="share-title">分享</div>
         <a class="share-item" target="_blank"
-            href="https://twitter.com/share?text=从源码看Redis —— 关于主动过期那点事 - 码年纪事&url=http://lzq.im/2022/03/31/redis-code-active-expiry/">
+            href="https://twitter.com/share?text=从源码看Redis —— 关于主动过期那点事 - 码年纪事&url=http://lzq.im/2022/04/06/redis-code-active-expiry/">
             <box-icon type='logo' name='twitter'></box-icon>
         </a>
         <a class="share-item" target="_blank"
-            href="https://www.facebook.com/sharer.php?title=从源码看Redis —— 关于主动过期那点事 - 码年纪事&u=http://lzq.im/2022/03/31/redis-code-active-expiry/">
+            href="https://www.facebook.com/sharer.php?title=从源码看Redis —— 关于主动过期那点事 - 码年纪事&u=http://lzq.im/2022/04/06/redis-code-active-expiry/">
             <box-icon name='facebook-square' type='logo' ></box-icon>
         </a>
         <!-- <a class="share-item" target="_blank"
-            href="https://service.weibo.com/share/share.php?title=从源码看Redis —— 关于主动过期那点事 - 码年纪事&url=http://lzq.im/2022/03/31/redis-code-active-expiry/&pic=">
+            href="https://service.weibo.com/share/share.php?title=从源码看Redis —— 关于主动过期那点事 - 码年纪事&url=http://lzq.im/2022/04/06/redis-code-active-expiry/&pic=">
             <div class="n-icon n-icon-weibo"></div>
         </a> -->
     </section>
@@ -845,7 +867,7 @@ int serverCron(struct aeEventLoop *eventLoop, long long id, void *clientData) &#
       <ul>
         
           <li>
-            <a href="/2022/03/31/redis-code-active-expiry/">从源码看Redis —— 关于主动过期那点事</a>
+            <a href="/2022/04/06/redis-code-active-expiry/">从源码看Redis —— 关于主动过期那点事</a>
           </li>
         
           <li>
@@ -861,7 +883,7 @@ int serverCron(struct aeEventLoop *eventLoop, long long id, void *clientData) &#
           </li>
         
           <li>
-            <a href="/2022/02/12/hello-blog/">hello blog</a>
+            <a href="/2022/02/12/hello-blog/">是时候也整个博客玩</a>
           </li>
         
       </ul>
