@@ -423,7 +423,7 @@ void activeExpireCycle(int type) &#123;
                                      (server.stat_expired_stale_perc*0.95);
 &#125;
 </code></pre>
-<h2 id="调用"><a href="#调用" class="headerlink" title="调用"></a>调用</h2><h3 id="Fast调用"><a href="#Fast调用" class="headerlink" title="Fast调用"></a>Fast调用</h3><p>该调用在<code>server.c</code>的<code>[beforeSleep</code>函数](<a target="_blank" rel="noopener" href="https://sourcegraph.com/github.com/redis/redis@871fa12fec41c4d8fc008dbfb8eaf714a9cc1bfc/-/blob/src/server.c?L1522)%E4%B8%8B%EF%BC%8C%E5%8F%AF%E4%BB%A5%5B%E7%9C%8B%E5%88%B0%5D(https://sourcegraph.com/github.com/redis/redis@871fa12fec41c4d8fc008dbfb8eaf714a9cc1bfc/-/blob/src/server.c?L1565:9)">https://sourcegraph.com/github.com/redis/redis@871fa12fec41c4d8fc008dbfb8eaf714a9cc1bfc/-/blob/src/server.c?L1522)下，可以[看到](https://sourcegraph.com/github.com/redis/redis@871fa12fec41c4d8fc008dbfb8eaf714a9cc1bfc/-/blob/src/server.c?L1565:9)</a></p>
+<h2 id="调用"><a href="#调用" class="headerlink" title="调用"></a>调用</h2><h3 id="Fast调用"><a href="#Fast调用" class="headerlink" title="Fast调用"></a>Fast调用</h3><p>该调用在<code>server.c</code>的<a target="_blank" rel="noopener" href="https://sourcegraph.com/github.com/redis/redis@871fa12fec41c4d8fc008dbfb8eaf714a9cc1bfc/-/blob/src/server.c?L1522"><code>beforeSleep</code>函数</a>下，可以<a target="_blank" rel="noopener" href="https://sourcegraph.com/github.com/redis/redis@871fa12fec41c4d8fc008dbfb8eaf714a9cc1bfc/-/blob/src/server.c?L1565:9">看到</a></p>
 <p>当启用主动过期，且不是从节点的情况下，每次调用<code>beforeSleep</code>都会调用一次Fast回收</p>
 <pre><code class="c">void beforeSleep(struct aeEventLoop *eventLoop) &#123;
     /*省略N行*/
