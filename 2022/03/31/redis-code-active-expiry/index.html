@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
     
-    <title>码年纪事</title>
+    <title>从源码看Redis —— 关于主动过期那点事 | 码年纪事</title>
 
     <meta name="description" content="码年纪事">
     <meta name="keywords" content="">
@@ -36,7 +36,7 @@
 
 
     <script>
-        window.isPost = false
+        window.isPost = true
         window.aomori = {
             
             
@@ -99,26 +99,46 @@
         <div class="main">
             <section class="inner">
                 <section class="inner-main">
-                    <div class="index">
-  
-    
-      <article
-id="post-redis-code-active-expiry"
-class="article article-type-post"
->
+                    <div class="post">
+    <article id="post-cl1n61mbz0004g0tu8m4hcor7" class="article article-type-post" itemscope
+    itemprop="blogPost">
 
+    <div class="article-inner">
 
-
-<div class="article-inner">
-    
-
-    <div class="article-body">
-    <header class="article-title">
-        <a href="/2022/03/31/redis-code-active-expiry/">从源码看Redis —— 关于主动过期那点事</a>
-    </header>
-    <div class="article-entry post-inner-html">
         
-        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>前段时间刷脉脉的时候，刷到了这样一个面试题：<code>为什么大量Key过期的时候，会影响整个redis服务的延迟</code></p>
+          
+        
+        
+        
+
+        
+        <header class="article-header">
+            
+  
+    <h1 class="article-title" itemprop="name">
+      从源码看Redis —— 关于主动过期那点事
+    </h1>
+  
+
+        </header>
+        
+
+        <div class="article-more-info article-more-info-post hairline">
+
+            <div class="article-date">
+  <time datetime="2022-03-31T06:43:15.000Z" itemprop="datePublished">2022-03-31</time>
+</div>
+
+            
+
+            
+
+            
+
+        </div>
+
+        <div class="article-entry post-inner-html hairline" itemprop="articleBody">
+            <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>前段时间刷脉脉的时候，刷到了这样一个面试题：<code>为什么大量Key过期的时候，会影响整个redis服务的延迟</code></p>
 <p>如果你是面试者，你会怎么回答？</p>
 <p>如果你只知道redis是一个单线程reactor模型，你可能会回答：<code>因为redis是单线程模型，所以是因为处理删除key的事件耗时过长而导致其他事件排队引起延迟增加</code></p>
 <p>这个回答能让面试官满意吗？可能还不够，他也许会继续问你：<code>那redis主动处理过期key的时机是什么时候？处理的逻辑是什么？最坏情况下会增加多少延迟？如何判断是因为过期key而导致的延迟抖动？如何解决这个问题？</code></p>
@@ -667,419 +687,66 @@ int serverCron(struct aeEventLoop *eventLoop, long long id, void *clientData) &#
 <p>Q：如何解决这个问题？</p>
 <p>A：避免大量key同时过期，如将key的过期时间在一定范围内进行随机化处理等。</p>
 
-        
-    </div>
-    </div>
+        </div>
 
-    <div class="article-badge">
-        
-        
     </div>
 
-</div>
-
-<footer class="article-footer">
-    <div class="article-more-info">
-    <div class="article-date">
-  <time datetime="2022-03-31T06:43:15.000Z" itemprop="datePublished">2022-03-31</time>
-</div>
     
+
     
-    </div>
-</footer>
+
+    
+
+    
+
+    
+
+    
+<nav class="article-nav">
+  
+  
+    <a href="/2022/03/03/manjaro-for-zephyrus-g14/" id="article-nav-older" class="article-nav-link-wrap">
+      <div class="article-nav-caption">上一篇</div>
+      <div class="article-nav-title">ROG Zephyrus G14 Manjaro-KDE 初步安装体验</div>
+    </a>
+  
+</nav>
+
+
+    <section class="share">
+        <div class="share-title">分享</div>
+        <a class="share-item" target="_blank"
+            href="https://twitter.com/share?text=从源码看Redis —— 关于主动过期那点事 - 码年纪事&url=http://lzq.im/2022/03/31/redis-code-active-expiry/">
+            <box-icon type='logo' name='twitter'></box-icon>
+        </a>
+        <a class="share-item" target="_blank"
+            href="https://www.facebook.com/sharer.php?title=从源码看Redis —— 关于主动过期那点事 - 码年纪事&u=http://lzq.im/2022/03/31/redis-code-active-expiry/">
+            <box-icon name='facebook-square' type='logo' ></box-icon>
+        </a>
+        <!-- <a class="share-item" target="_blank"
+            href="https://service.weibo.com/share/share.php?title=从源码看Redis —— 关于主动过期那点事 - 码年纪事&url=http://lzq.im/2022/03/31/redis-code-active-expiry/&pic=">
+            <div class="n-icon n-icon-weibo"></div>
+        </a> -->
+    </section>
 
 </article>
 
-    
-  
-    
-      <article
-id="post-manjaro-for-zephyrus-g14"
-class="article article-type-post"
->
 
 
 
-<div class="article-inner">
-    
 
-    <div class="article-body">
-    <header class="article-title">
-        <a href="/2022/03/03/manjaro-for-zephyrus-g14/">ROG Zephyrus G14 Manjaro-KDE 初步安装体验</a>
-    </header>
-    <div class="article-entry post-inner-html">
-        
-        <h1 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h1><p>之前我主力的开发环境还是在Windows下，需要Linux的部分一般使用WSL来完成，最近闲来无事，打算给笔记本装个Linux玩玩。关于发行版的选择，几经考虑还是选择了相对来说比较火的Manjaro，一来既然是折腾，还是打算选择一个滚动发现版的系统，最后取舍之下就选了Manjaro，至于为什么是KDE，大概是因为之前也用过GNOME，打算换个口味。😊</p>
-<h1 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h1><p>由于有图形化的界面，这块是比较简单的了，下载完镜像后使用<code>rufus</code>做一个启动盘，BIOS上选好优先级，很容易就进入启动菜单了。<br>一开始默认有2个安装选择，闭源驱动的版本和开源驱动的版本，由于我这个笔记本是绿厂显卡的，因为<code>fxxk Nvidia</code>的原因，选了闭源驱动的版本，这样稳定性上相对来说会更好。</p>
-<p>剩下的就是根据GUI的提示选择好分区，安装完事。</p>
-<h1 id="折腾"><a href="#折腾" class="headerlink" title="折腾"></a>折腾</h1><h2 id="换源"><a href="#换源" class="headerlink" title="换源"></a>换源</h2><p>先把官方源替换成国内镜像</p>
-<pre><code>sudo pacman-mirrors -i -c China -m rank
-</code></pre>
-<p>然后在<code>/etc/pacman.conf</code>添加一下中文软件包</p>
-<pre><code>[archlinuxcn]
-SigLevel = TrustAll
-Server = https://mirrors.tuna.tsinghua.edu.cn/archlinuxcn/$arch
 
-[arch4edu]
-SigLevel = TrustAll
-Server = https://mirrors.tuna.tsinghua.edu.cn/arch4edu/$arch
-</code></pre>
-<p>更新系统</p>
-<pre><code>sudo pacman -Syyu
-</code></pre>
-<h2 id="安装yay"><a href="#安装yay" class="headerlink" title="安装yay"></a>安装yay</h2><pre><code>sudo pacman -S yay
-</code></pre>
-<p>yay是一个go写的aur助手，相比来说比官方有更多的软件包，可以安装一些官方源找不到的软件包</p>
-<h2 id="常用软件安装"><a href="#常用软件安装" class="headerlink" title="常用软件安装"></a>常用软件安装</h2><h3 id="输入法"><a href="#输入法" class="headerlink" title="输入法"></a>输入法</h3><p>这里安装的是rime，一般还会调整输入方案、主题等，这些详细的配置网上已经有比较多的说明了，就不具体列了</p>
-<pre><code>yay -S fcitx5-im fcitx5-configtool fcitx5-rime
-</code></pre>
-<p>修改.xprofile</p>
-<pre><code>export GTK_IM_MODULE=fcitx
-export QT_IM_MODULE=fcitx
-export SDL_IM_MODULE=fcitx
-export XMODIFIERS=&quot;@im=fcitx&quot;
-export LANG=&quot;zh_CN.UTF-8&quot;
-export LC_CTYPE=&quot;zh_CN.UTF-8&quot;
-</code></pre>
-<h3 id="Chrome"><a href="#Chrome" class="headerlink" title="Chrome"></a>Chrome</h3><p>自带的Firefox不习惯，还是习惯Chrome</p>
-<pre><code>yay -S google-chrome
-</code></pre>
-<h3 id="腾讯软件"><a href="#腾讯软件" class="headerlink" title="腾讯软件"></a>腾讯软件</h3><p>具体可看这2个repo<br>如果笔记本调了系统缩放比例，由于wine软件是不会跟随这个配置的，需要单独去配置dpi</p>
-<pre><code>https://github.com/vufa/deepin-wine-tim-arch
-https://github.com/vufa/deepin-wine-wechat-arch
-</code></pre>
-<h3 id="科学上网"><a href="#科学上网" class="headerlink" title="科学上网"></a>科学上网</h3><p>这里推荐Qv2ray，虽然已经不再维护了，但是目前是够用的</p>
-<pre><code>https://github.com/Qv2ray/Qv2ray
-</code></pre>
-<p>可以直接用yay下载，如果从github下安装包的话，可能需要安装依赖<code> libxcrypt-compat</code></p>
-<h2 id="终端配置"><a href="#终端配置" class="headerlink" title="终端配置"></a>终端配置</h2><p>Manjaro默认就启用了zsh，这边使用oh-my-zsh来增强，至于插件主题啥的就按个人喜欢修改了</p>
-<pre><code>sh -c &quot;$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)&quot;
-cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc
-</code></pre>
-<p>命令行的工具<br>这边在网上看到一个合集，挺不错的 <a target="_blank" rel="noopener" href="https://www.kawabangga.com/posts/3084">合集</a></p>
-<h2 id="开发工具"><a href="#开发工具" class="headerlink" title="开发工具"></a>开发工具</h2><p>这里装了vscode postman</p>
-<pre><code>yay -S visual-studio-code-bin postman
-</code></pre>
-<p>然后安装了JetBrains家的IDE</p>
-<h2 id="华硕笔记本相关"><a href="#华硕笔记本相关" class="headerlink" title="华硕笔记本相关"></a>华硕笔记本相关</h2><p>gitlab上有一个玩家自发开发的华硕笔记本的linux工具<a target="_blank" rel="noopener" href="https://gitlab.com/asus-linux">仓库</a><br><code>asusctl</code>可以用于电池充电控制、LED控制等等<br><code>supergfxctl</code>用于显卡切换 </p>
-<h2 id="字体-x2F-美化"><a href="#字体-x2F-美化" class="headerlink" title="字体&#x2F;美化"></a>字体&#x2F;美化</h2><p>这部分都是看个人喜好了，不过KDE的字体渲染还是挺糟糕的，这边换了<code>文泉驿</code>的字体</p>
-<pre><code>yay -S wqy-zenhei wqy-bitmapfont
-</code></pre>
-<h1 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h1><p>其实可以折腾的东西有很多，本文也会持续更新使用情况</p>
-<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/114296129">Manjaro-KDE安装配置全攻略</a></p>
-<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/2d096cd9ad61">manjaro 切换国内源及软件安装</a></p>
 
-        
-    </div>
-    </div>
 
-    <div class="article-badge">
-        
-        
-    </div>
+
+
+
+
+
+
+
 
 </div>
-
-<footer class="article-footer">
-    <div class="article-more-info">
-    <div class="article-date">
-  <time datetime="2022-03-03T10:17:08.000Z" itemprop="datePublished">2022-03-03</time>
-</div>
-    
-    
-    </div>
-</footer>
-
-</article>
-
-    
-  
-    
-      <article
-id="post-fix-concurrent-monkey-windows"
-class="article article-type-post"
->
-
-
-
-<div class="article-inner">
-    
-
-    <div class="article-body">
-    <header class="article-title">
-        <a href="/2022/02/22/fix-concurrent-monkey-windows/">修正monkey补丁在windows下失败的问题</a>
-    </header>
-    <div class="article-entry post-inner-html">
-        
-        <h1 id="起因"><a href="#起因" class="headerlink" title="起因"></a>起因</h1><p>公司内正在做的一个项目最近正在写接口集成测试的脚本，但是由于项目内部分代码使用了全局单例，这部分很难进行mock测试，虽然通过gomonkey可以进行一定程度的patch，但是由于gomonkey当前是非协程安全的，也就是没办法做并行的测试，然而我们的项目用例很多，如果进行串行测试，整个CI流程走下来要接近10分钟，这会非常影响开发的效率，故我开始寻求解决方案。</p>
-<h1 id="转机"><a href="#转机" class="headerlink" title="转机"></a>转机</h1><p>最终在网上发现了有人做了一个支持多协程的monkey补丁<a target="_blank" rel="noopener" href="https://github.com/go-kiss/monkey">go-kiss&#x2F;monkey</a>，看了作者的<a target="_blank" rel="noopener" href="https://taoshu.in/go/monkey.html">实现文章</a>后，其基本原理就是通过写入一段汇编实现的switch代码段，通过当前协程ID的比较，进行分支跳转到不同的patch上，虽然当前的版本比较粗糙，安全性据说也没有完善处理，但是作为测试我觉得是够用了，所以打算在项目里先试试。</p>
-<h1 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h1><p>测试这个monkey库的时候发现了一个问题，在AMD64 + Linux 的环境下是能够正常跑通独立patch的逻辑，但是AMD64 + Windows下却失效了，然而我司不少小伙伴的开发机还是使用Windows平台，如果在Windows下无法正常使用，就需要用wsl等方式来跑自测，这样会影响到原先的开发流程。既然作者把基本原理都提供了，故我打算尝试解决这个Bug。</p>
-<h1 id="排查"><a href="#排查" class="headerlink" title="排查"></a>排查</h1><h2 id="排查Hook流程"><a href="#排查Hook流程" class="headerlink" title="排查Hook流程"></a>排查Hook流程</h2><p>写了一段测试代码用于排查，执行后停在input处，拿x86debug附加进去，找到协程判断的汇编段</p>
-<pre><code>import (
-    &quot;fmt&quot;
-    &quot;github.com/go-kiss/monkey&quot;
-)
-
-//go:noinline
-func Add(a, b int) int &#123;
-    return a + b
-&#125;
-
-func Add1(a, b int) int &#123;
-    return 10
-&#125;
-
-
-func main() &#123;
-    monkey.Patch(Add, Add1)
-    var input string
-    fmt.Scanln(&amp;input)
-    fmt.Printf(&quot;g1 add = %d\n&quot;, Add(99, 99))
-&#125;
-</code></pre>
-<p>发现其判断协程ID的逻辑没有通过，然而测试代码只有一个协程，明显和我们的预期相悖，按理想逻辑，cmp应该成功，不走jne跳转，实际上却判断失败，跳过了patch，手工将跳转nop掉之后，能够正常的执行patch代码，所以初步定位是协程ID获取的地方有错误，导致程序中获取的协程ID和汇编代码中获取的协程ID不一致。<br><img src="/2022/02/22/fix-concurrent-monkey-windows/x64debug.png" loading="lazy"></p>
-<pre><code class="go">// 错误的代码
-func getg() []byte &#123;
-    return []byte&#123;
-        // mov r12,QWORD PTR gs:0x28
-        0x65, 0x4C, 0x8B, 0x24, 0x25, 0x28, 0x00, 0x00, 0x00,
-    &#125;
-&#125;
-</code></pre>
-<h2 id="比较Linux和Windows下获取协程ID的差异"><a href="#比较Linux和Windows下获取协程ID的差异" class="headerlink" title="比较Linux和Windows下获取协程ID的差异"></a>比较Linux和Windows下获取协程ID的差异</h2><p>按照原文作者的方法，写了一段代码用于原始获取汇编指令</p>
-<pre><code class="go">import &quot;github.com/huandu/go-tls/g&quot;
-
-func main() &#123;
-    _ = g.G()   // 这里其实没有必要按原文那样修改源码，直接这样也能找到的
-&#125;
-</code></pre>
-<p>在Linux和Windows下分别编译</p>
-<pre><code class="shell">go build -ldflags=-w -gcflags &#39;-N -l&#39; main.go
-</code></pre>
-<p>dump</p>
-<pre><code>// linux
-go tool objdump main &gt; main.txt
-// windows
-go tool objdump main.exe &gt; main.txt
-</code></pre>
-<p>找到getg的汇编代码比较<br>Linux</p>
-<pre><code class="asm">TEXT github.com/huandu/go-tls/g.getg.abi0(SB) /root/go/pkg/mod/github.com/huandu/go-tls@v1.0.1/g/getg_amd64.s
-  getg_amd64.s:10    0x455420        64488b0425f8ffffff    MOVQ FS:0xfffffff8, AX    
-  getg_amd64.s:11    0x455429        4889442408        MOVQ AX, 0x8(SP)    
-  getg_amd64.s:12    0x45542e        c3            RET            
-</code></pre>
-<p>Windows</p>
-<pre><code class="asm">TEXT github.com/huandu/go-tls/g.getg.abi0(SB) C:/Users/lzq/go/pkg/mod/github.com/huandu/go-tls@v1.0.1/g/getg_amd64.s
-  getg_amd64.s:9    0x45ab80        65488b0c2528000000    MOVQ GS:0x28, CX    
-  getg_amd64.s:10    0x45ab89        488b8100000000        MOVQ 0(CX), AX        
-  getg_amd64.s:11    0x45ab90        4889442408        MOVQ AX, 0x8(SP)    
-  getg_amd64.s:12    0x45ab95        c3            RET            
-</code></pre>
-<p>可以发现其实非原文所说的单纯只是偏移和寄存器不一致，Windows下还多了一行</p>
-<pre><code class="asm">  getg_amd64.s:10    0x45ab89        488b8100000000        MOVQ 0(CX), AX        
-</code></pre>
-<p>也就是说在Windows下其实是2级指针，从<code>GS:0x28</code>获取出来的是一个二级指针，还需要一次move才能获取到g的指针</p>
-<h1 id="修复和测试"><a href="#修复和测试" class="headerlink" title="修复和测试"></a>修复和测试</h1><h2 id="修复"><a href="#修复" class="headerlink" title="修复"></a>修复</h2><p>知道问题了，于是尝试修改一波，不过我对汇编不是很熟，大致想法是先将二级指针移到r13，在二次取值回r12，这样只需要修改getg的逻辑，其他的代码可以保持原有的逻辑，写入的协程ID在后面的代码中会覆盖掉r12，照我的理解应该是没有问题。</p>
-<pre><code class="go">func getg() []byte &#123;
-    return []byte&#123;
-        // mov r13,QWORD PTR gs:0x28
-        0x65, 0x4C, 0x8B, 0x2C, 0x25, 0x28, 0x00, 0x00, 0x00,
-        // mov r12,QWORD PTR [r13]
-        0x4D, 0x8B, 0x65, 0x00,
-    &#125;
-&#125;
-</code></pre>
-<p><a target="_blank" rel="noopener" href="https://github.com/kkbblzq/monkey">修复后的代码</a> 我也提了个pr给原仓库</p>
-<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><pre><code class="go">import (
-    &quot;fmt&quot;
-    //&quot;github.com/go-kiss/monkey&quot;
-    &quot;github.com/kkbblzq/monkey&quot;
-)
-
-//go:noinline
-func Add(a, b int) int &#123;
-    return a + b
-&#125;
-
-func Add1(a, b int) int &#123;
-    return 10
-&#125;
-
-func Add2(a, b int) int &#123;
-    return 100
-&#125;
-
-func main() &#123;
-
-    go func() &#123;
-        monkey.Patch(Add, Add1)
-        fmt.Printf(&quot;g1 add = %d\n&quot;, Add(99, 99))
-    &#125;()
-
-    go func() &#123;
-        monkey.Patch(Add, Add2)
-        fmt.Printf(&quot;g2 add = %d\n&quot;, Add(99, 99))
-    &#125;()
-    
-    var input string
-    fmt.Scanln(&amp;input)
-&#125;
-</code></pre>
-<p>输出</p>
-<pre><code>C:\Users\lzq\AppData\Local\Temp\GoLand\___go_build_monkeyDemo.exe
-g1 add = 10
-g2 add = 100
-</code></pre>
-<p>测试符合预期，收工。</p>
-<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>目前monkey patch这块还是比较hack的行为，由于和底层汇编实现强关联，需要单独去适配不同的平台、不同的架构还是挺蛋疼的，不知道是否有更好的方式来实现，比如使用go的中间层汇编在执行的时候转换成字节码再patch进去，不过目前好像没有找到实现方式，待定吧~</p>
-
-        
-    </div>
-    </div>
-
-    <div class="article-badge">
-        
-        
-    </div>
-
-</div>
-
-<footer class="article-footer">
-    <div class="article-more-info">
-    <div class="article-date">
-  <time datetime="2022-02-22T13:53:49.000Z" itemprop="datePublished">2022-02-22</time>
-</div>
-    
-    
-    </div>
-</footer>
-
-</article>
-
-    
-  
-    
-      <article
-id="post-program-optimization-essay"
-class="article article-type-post"
->
-
-
-
-<div class="article-inner">
-    
-
-    <div class="article-body">
-    <header class="article-title">
-        <a href="/2022/02/13/program-optimization-essay/">程序优化随笔</a>
-    </header>
-    <div class="article-entry post-inner-html">
-        
-        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p><strong>过早优化是万恶之源</strong><br>文本只是提供一些优化可能性<br>本文目前还只是个草稿雏形，待后续补充</p>
-<h2 id="局部性原理"><a href="#局部性原理" class="headerlink" title="局部性原理"></a>局部性原理</h2><p>现代程序优化很大一部分都基于局部性原理来进行，这主要是由于存储器和CPU本身效率的巨大差距，进而出现的多级缓存机制，不少程序优化就是利用了这一点，尽可能保证高层次的快速缓存能够命中，以此来提升程序的执行效率。</p>
-<h2 id="关于编译器优化"><a href="#关于编译器优化" class="headerlink" title="关于编译器优化"></a>关于编译器优化</h2><p>虽然现代编译器优化已经可以帮助完成很多常规情况下的优化，但是因为程序执行上的不确定性，有些代码会导致妨碍编译器进行优化，如数组的越界检查、存储器别名使用等情形。</p>
-<ul>
-<li>案例 边界检查<pre><code class="go">// 检查1次
-func bounds1(s []int, index int) &#123;
-  _ = s[index:]
-  _ = s[:index]
-&#125;
-// 检查2次
-func bounds2(s []int, index int) &#123;
-  _ = s[:index]
-  _ = s[index:]
-&#125;
-</code></pre>
-</li>
-<li>案例 存储器别名使用</li>
-</ul>
-<pre><code class="go">func addDouble(a, b *int) &#123;
-    *a += *b
-    *a += *b
-&#125;
-
-func addDouble2(a, b *int) &#123;
-    *a += 2 * *b
-&#125;
-</code></pre>
-<p>这2个函数表面看起来是一样的，但是你考虑一下a和b指针相等情况，就会发现实际上他们并不一致</p>
-<h1 id="优化点"><a href="#优化点" class="headerlink" title="优化点"></a>优化点</h1><h2 id="缓存行"><a href="#缓存行" class="headerlink" title="缓存行"></a>缓存行</h2><h3 id="缓存抖动"><a href="#缓存抖动" class="headerlink" title="缓存抖动"></a>缓存抖动</h3><h2 id="利用指令集"><a href="#利用指令集" class="headerlink" title="利用指令集"></a>利用指令集</h2><p>如SSE指令，可以提高寄存器利用，通过并行的方式提高效率</p>
-
-        
-    </div>
-    </div>
-
-    <div class="article-badge">
-        
-        
-    </div>
-
-</div>
-
-<footer class="article-footer">
-    <div class="article-more-info">
-    <div class="article-date">
-  <time datetime="2022-02-13T07:08:23.000Z" itemprop="datePublished">2022-02-13</time>
-</div>
-    
-    
-    </div>
-</footer>
-
-</article>
-
-    
-  
-    
-      <article
-id="post-hello-blog"
-class="article article-type-post"
->
-
-
-
-<div class="article-inner">
-    
-
-    <div class="article-body">
-    <header class="article-title">
-        <a href="/2022/02/12/hello-blog/">hello blog</a>
-    </header>
-    <div class="article-entry post-inner-html">
-        
-        <ul>
-<li>测试</li>
-</ul>
-
-        
-    </div>
-    </div>
-
-    <div class="article-badge">
-        
-        
-    </div>
-
-</div>
-
-<footer class="article-footer">
-    <div class="article-more-info">
-    <div class="article-date">
-  <time datetime="2022-02-12T07:06:48.000Z" itemprop="datePublished">2022-02-12</time>
-</div>
-    
-    
-    </div>
-</footer>
-
-</article>
-
-    
-  
-
-  
-</div>
-
                 </section>
             </section>
 
@@ -1101,6 +768,12 @@ class="article article-type-post"
 <div class="widget" id="widget">
     
       
+  <div class="widget-wrap">
+    <div class="widget-inner">
+      <div class="toc post-toc-html"></div>
+    </div>
+  </div>
+
     
       
 
